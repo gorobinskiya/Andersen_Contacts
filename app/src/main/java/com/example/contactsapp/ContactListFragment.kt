@@ -2,11 +2,11 @@ package com.example.contactsapp
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 class ContactListFragment: Fragment(R.layout.contact_list_layout){
 
@@ -20,12 +20,11 @@ class ContactListFragment: Fragment(R.layout.contact_list_layout){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val contactList = listOf(
-            Contact("Андрей", "Горобинский", "+3806381718"),
-            Contact("Юра", "Петров", "+3809675802"),
-            Contact("Александр", "Шалыгин", "+38063752102"),
-            Contact("Дмитрий", "Кривенко", "+3809672142")
-        )
+        val contactList = mutableListOf<Contact>().apply {
+            repeat(150){
+                add(Contact("${UUID.randomUUID()}", "${UUID.randomUUID()}","${UUID.randomUUID()}"))
+            }
+        }
 
         val contactListView = view.findViewById<RecyclerView>(R.id.contactsRecycleView)
         contactListView.layoutManager = LinearLayoutManager(context);
