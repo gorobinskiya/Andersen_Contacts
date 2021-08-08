@@ -12,5 +12,5 @@ data class Contact(
         return "$firstName $secondName $phone";
     }
 
-    val imageUrl = "https://picsum.photos/200?random=$age"
+    val imageUrl = "https://picsum.photos/200?random=${(0..150).random()}"
 }
