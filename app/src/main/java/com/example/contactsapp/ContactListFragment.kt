@@ -7,10 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
+import kotlin.random.Random.Default.nextInt
 
-class ContactListFragment: Fragment(R.layout.contact_list_layout){
+class ContactListFragment : Fragment(R.layout.contact_list_layout) {
 
-    private lateinit var  itemNameClickListener: OnItemNameClickListener
+    private lateinit var itemNameClickListener: OnItemNameClickListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -21,23 +22,25 @@ class ContactListFragment: Fragment(R.layout.contact_list_layout){
         super.onViewCreated(view, savedInstanceState)
 
         val contactList = mutableListOf<Contact>().apply {
-            repeat(150){
-                add(Contact("${UUID.randomUUID()}", "${UUID.randomUUID()}","${UUID.randomUUID()}"))
+            repeat(150) {
+                add(
+                    Contact(
+                        "${UUID.randomUUID()}",
+                        "${UUID.randomUUID()}",
+                        "${UUID.randomUUID()}",
+                        (0..80).random()
+                    )
+                )
             }
         }
 
         val contactListView = view.findViewById<RecyclerView>(R.id.contactsRecycleView)
         contactListView.layoutManager = LinearLayoutManager(context);
-        val contactListAdapter = ContactListRecyclerViewAdapter(context, contactList)
-        val clickListener = object : ContactListRecyclerViewAdapter.ClickListener {
-            override fun onClick(contact: Contact) {
-                itemNameClickListener.OnItemNameClicked(contact)
-            }
-        }
+        val contactListAdapter = ContactListRecyclerViewAdapter(
+            contactList,
+            { itemNameClickListener.OnItemNameClicked(it) })
 
-        contactListAdapter.setClickListener(clickListener)
-        contactListView.adapter = contactListAdapter;
-
+        contactListView.adapter = contactListAdapter
     }
 
     interface OnItemNameClickListener {

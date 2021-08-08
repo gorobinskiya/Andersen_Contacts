@@ -2,12 +2,14 @@ package com.example.contactsapp
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 
-class ContactFragment: Fragment(R.layout.contact_layout) {
+class ContactFragment : Fragment(R.layout.contact_layout) {
 
-    lateinit var  displayMessage: Contact
+    lateinit var displayMessage: Contact
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -16,17 +18,15 @@ class ContactFragment: Fragment(R.layout.contact_layout) {
 
         view.findViewById<TextView>(R.id.textView).text = displayMessage.toString()
 
-        return
+        Glide.with(requireContext()).load(displayMessage.imageUrl)
+            .into(view.findViewById<ImageView>(R.id.imageView))
     }
 
-    companion object{
-        fun newInstance(contact: Contact): ContactFragment{
-            val fragmentContact = ContactFragment()
-            val bundle = Bundle()
-            bundle.putSerializable("message",contact)
-            fragmentContact.arguments = bundle
-            //fragmentContact.arguments?.putSerializable("message", contact)
-            return fragmentContact
+    companion object {
+        fun newInstance(contact: Contact) = ContactFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable("message", contact)
+            }
         }
 
         const val TAG = "FRAGMENT_CONTACT_TAG"

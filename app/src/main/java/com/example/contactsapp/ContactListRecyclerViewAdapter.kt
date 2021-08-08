@@ -4,57 +4,39 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import java.util.*
 
-class ContactListRecyclerViewAdapter(context: Context?, data: List<Contact>) : RecyclerView.Adapter<ContactListRecyclerViewAdapter.ViewHolder>() {
-    private val contacts: List<Contact>
-    private val inflater: LayoutInflater
-    private var clickListener: ClickListener? = null
+class ContactListRecyclerViewAdapter(var data: List<Contact>, val onClick: (Contact) -> Unit) :
+    RecyclerView.Adapter<ContactListRecyclerViewAdapter.ContactViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val contactRowView = inflater.inflate(R.layout.contact_item_layout, parent, false)
-        return ViewHolder(contactRowView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
+        val contactRowView =
+            LayoutInflater.from(parent.context).inflate(R.layout.contact_item_layout, parent, false)
+        return ContactViewHolder(contactRowView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val contactName = getContactName(contacts[position])
+    override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
+        val contactName = getContactName(data[position])
         holder.contactNameTextView.text = contactName
+        holder.itemView.setOnClickListener { onClick(data[position]) }
+        Glide.with(holder.itemView.context).load(data[position].imageUrl).into(holder.avatarImage)
     }
 
     override fun getItemCount(): Int {
-        return contacts.size
-    }
-
-    fun setClickListener(listener: ClickListener) {
-        clickListener = listener
+        return data.size
     }
 
     private fun getContactName(contact: Contact): String {
-        return contact.firstName + " " + contact.secondName
+        return contact.firstName + " " + contact.secondName + " " + contact.phone
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        val contactNameTextView: TextView
-        override fun onClick(view: View) {
-            clickListener!!.onClick(contacts[adapterPosition])
-        }
-
-        init {
-            contactNameTextView = itemView.findViewById(R.id.contactNameView)
-            itemView.setOnClickListener(this)
-        }
+    class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val contactNameTextView: TextView = itemView.findViewById(R.id.contactNameView)
+        val avatarImage: ImageView = itemView.findViewById(R.id.avatar_image)
     }
 
-    interface ClickListener {
-        fun onClick(contact: Contact)
-    }
-
-    init {
-        Objects.requireNonNull(data)
-        inflater = LayoutInflater.from(context)
-        contacts = data
-    }
 }
